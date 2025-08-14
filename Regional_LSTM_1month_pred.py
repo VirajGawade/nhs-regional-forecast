@@ -39,7 +39,7 @@ df_all = df_all.sort_values("Month")
 
 # Collect all results
 all_results = []
-results = []  # <-- Added for summary collection
+results = []  # summary collection
 
 for REGION in REGIONS:
     df = df_all[df_all["Region_unified"] == REGION].copy()
@@ -85,7 +85,7 @@ for REGION in REGIONS:
     # Predict (scaled)
     y_pred_scaled = model.predict(X_input)
 
-    # -------- FIXED INVERSE SCALING --------
+    # fixed inverse scaling
     if hasattr(scaler, "feature_names_in_"):
         feature_cols = list(scaler.feature_names_in_)
     else:
@@ -98,8 +98,7 @@ for REGION in REGIONS:
 
     last_frame_unscaled = scaler.inverse_transform([last_frame_scaled])
     y_pred = last_frame_unscaled[0][target_idx]
-    # ---------------------------------------
-
+    
     # Output
     result_df = pd.DataFrame({
         "Region": [REGION],
@@ -130,7 +129,7 @@ for REGION in REGIONS:
         "Accuracy (%)": result_df["Accuracy (%)"].values[0] if not is_forecast else None,
     })
 
-    # Plot with date in filename (keep separate per region)
+    # Plot with date in filename (separate per region)
     plt.figure(figsize=(5, 5))
     if not is_forecast:
         plt.bar(["Actual", "Predicted"], [actual_value, y_pred], color=["blue", "orange"])
@@ -162,7 +161,7 @@ for REGION in REGIONS:
 
     tf.keras.backend.clear_session()
 
-# Save one summary CSV for all regions together (with date in filename)
+# Save one summary CSV 
 summary_df = pd.DataFrame(results)
 print("\n[INFO] Monthly LSTM 1-month Prediction Summary:")
 print(summary_df.to_string(index=False))

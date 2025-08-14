@@ -9,7 +9,7 @@ OUTPUT_CSV = r"C:\Users\viraj\Downloads\nhs regional scripts\regional_engineered
 df = pd.read_csv(INPUT_CSV, parse_dates=["Week"])
 df = df.sort_values(["Region_unified", "Week"]).reset_index(drop=True)
 
-# LAG FEATURES (PER REGION)
+# Lag features
 lag_columns = [
     "Total_Attendances",
     "Type1_Attendances",
@@ -24,7 +24,7 @@ for col in lag_columns:
         for lag in [1, 2, 3]:
             df[f"{col}_lag{lag}"] = df.groupby("Region_unified")[col].shift(lag)
 
-# ROLLING FEATURES (PER REGION)
+# rolling features
 rolling_columns = [
     "Total_Attendances",
     "Over_4hr_Waits",
@@ -45,7 +45,7 @@ for col in rolling_columns:
             .reset_index(0, drop=True)
         )
 
-# SEASONALITY & CALENDAR FLAGS
+# seasonality and calender flags
 df["Week_Num"] = df["Week"].dt.isocalendar().week
 df["Month_Num"] = df["Week"].dt.month
 df["Quarter"] = df["Week"].dt.quarter
@@ -53,7 +53,7 @@ df["Is_Winter"] = df["Month_Num"].isin([11, 12, 1, 2, 3]).astype(int)
 df["Is_Holiday_Month"] = df["Month_Num"].isin([12, 1]).astype(int)
 df["Is_Financial_Year_End"] = (df["Month_Num"] == 3).astype(int)
 
-# SMART FILTER (ESSENTIAL LAGS)
+# Essential lags
 essential_lags = [
     "Total_Attendances_lag3",
     "Over_4hr_Waits_lag3",

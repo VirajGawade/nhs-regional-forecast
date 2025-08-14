@@ -67,7 +67,7 @@ for region in sorted(df[region_col].dropna().unique()):
         actual = match_row[target_col].values[0]
         mode = "validation"
     else:
-        # Forecast mode — average of last 12 months features
+        # Forecast mode: average of last 12 months features
         forecast_input = region_df[region_df[date_col] < target_date].copy().tail(12)
         if len(forecast_input) < 12:
             print(f" Not enough past data to forecast for {region}. Skipping...")

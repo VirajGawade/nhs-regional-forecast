@@ -106,7 +106,7 @@ for region in regions:
         verbose=0
     )
 
-    # Predict and inverse-transform
+    # Predict and inverse transform
     y_pred = model.predict(X_test).flatten()
     idx = len(feat_cols)
     inv_y_test = scaler.inverse_transform(np.hstack([np.zeros((len(y_test), idx)), y_test.reshape(-1,1)]))[:, idx]
@@ -159,7 +159,7 @@ for region in regions:
     plt.savefig(f"weekly_forecast_plot_{region}.png")
     plt.close()
 
-# After loop ends: print and save summary table
+# print and save summary table
 summary_df = pd.DataFrame(all_results)
 print("[INFO] Weekly LSTM Modeling Summary:")
 print(summary_df.to_string(index=False))

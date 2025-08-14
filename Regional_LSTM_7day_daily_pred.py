@@ -116,7 +116,7 @@ for region in regions:
     daily_ints = []
     remaining = total_int
     for i, day in enumerate(week_labels):
-        if i < 6:  # Monday..Saturday
+        if i < 6:  # Monday to Saturday
             v = int(np.floor(total_int * DAILY_PROPORTIONS[day]))
             daily_ints.append(v)
             remaining -= v

@@ -8,7 +8,7 @@ import glob
 import subprocess
 import time
 
-# ===================== CONFIG =====================
+# config
 BASE_DIR = Path(__file__).resolve().parent
 
 REGIONS = [
@@ -41,7 +41,7 @@ SCRIPT_MAP = {
     }
 }
 
-# ===================== HELPERS =====================
+# helpers
 def run_script(script_name, year, month, day=None):
     """Run a standalone script with given parameters and return its output."""
     script_path = BASE_DIR / script_name
@@ -69,7 +69,7 @@ def filter_by_region(output_text, region):
         # Start capturing when chosen region appears
         if f"Processing region: {region}" in line:
             capture = True
-        # Stop capturing when we see another 'Processing region:' line
+        # Stop capturing 
         elif line.startswith("[INFO] Processing region:") and capture:
             break
         if capture:
@@ -79,7 +79,7 @@ def filter_by_region(output_text, region):
 
 
 
-# ===================== STREAMLIT UI =====================
+# Streamlit UI
 st.set_page_config(page_title="NHS Regional Forecast", layout="wide")
 
 st.title("📊 NHS Regional Attendances Forecast")
@@ -96,7 +96,7 @@ if granularity in ["Weekly", "Daily"]:
 
 tabs = st.tabs(["Hybrid (Default)", "ML", "LSTM", "SHAP Explainability (ML Only)"])
 
-# --- Hybrid tab ---
+# Hybrid tab 
 with tabs[0]:
     script = SCRIPT_MAP[granularity]["Hybrid"]
     output = run_script(script, year, month, day)
@@ -105,7 +105,7 @@ with tabs[0]:
     st.subheader(f"{granularity} - Hybrid Prediction")
     st.code(output)
 
-# --- ML tab ---
+# ML tab 
 with tabs[1]:
     script = SCRIPT_MAP[granularity]["ML"]
     output = run_script(script, year, month, day)
@@ -114,7 +114,7 @@ with tabs[1]:
     st.subheader(f"{granularity} - ML Prediction")
     st.code(output)
 
-# --- LSTM tab ---
+# LSTM tab 
 with tabs[2]:
     script = SCRIPT_MAP[granularity]["LSTM"]
     output = run_script(script, year, month, day)
@@ -123,7 +123,7 @@ with tabs[2]:
     st.subheader(f"{granularity} - LSTM Prediction")
     st.code(output)
 
-# --- SHAP tab ---
+# SHAP tab 
 with tabs[3]:
     st.header("SHAP Explainability (ML Models Only)")
 
@@ -141,11 +141,11 @@ with tabs[3]:
         shap_dir = Path("shap_outputs")
         shap_dir.mkdir(exist_ok=True)  # Ensure folder exists
 
-        # 1. Remove old SHAP plots from shap_outputs/
+        # Remove old SHAP plots from shap_outputs
         for old_png in glob.glob(str(shap_dir / "*.png")):
             Path(old_png).unlink(missing_ok=True)
 
-        # 2. Build the command
+        # Build the command
         cmd = [
             sys.executable, "shap_explain.py",
             "--granularity", granularity_shap,
@@ -157,13 +157,13 @@ with tabs[3]:
         if day_shap is not None:
             cmd += ["--day", str(day_shap)]
 
-        # 3. Run script
+        # Run script
         st.write("Running SHAP explainability...")
         subprocess.run(cmd)
 
-        time.sleep(1)  # give time for PNGs to save
+        time.sleep(1) 
 
-        # 4. Load last 2 PNGs created from shap_outputs folder
+        # Load last 2 PNGs created from shap_outputs folder
         png_files = sorted(
             glob.glob(str(shap_dir / "*.png")),
             key=lambda x: Path(x).stat().st_mtime,

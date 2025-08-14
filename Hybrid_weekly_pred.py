@@ -8,26 +8,24 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_percentage_error
 from tensorflow.keras.models import load_model
 import tensorflow as tf
-
-# Quiet TF
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 tf.get_logger().setLevel('ERROR')
 
-# ==== CLI ====
+# CLI
 parser = argparse.ArgumentParser(description="Hybrid (ML + LSTM) Weekly Prediction by Region")
 parser.add_argument("--year", type=int, required=True)
 parser.add_argument("--month", type=int, required=True)
 parser.add_argument("--day", type=int, required=True)
 args = parser.parse_args()
 
-# ==== Dates: Monday start, Sunday end (matches your weekly scripts) ====
+
 input_date = datetime(args.year, args.month, args.day)
-week_start = input_date - timedelta(days=input_date.weekday())  # Monday
-TARGET_DATE = week_start + timedelta(days=6)  # Sunday (stored in CSV)
+week_start = input_date - timedelta(days=input_date.weekday()) 
+TARGET_DATE = week_start + timedelta(days=6)  
 iso_year, iso_week, _ = TARGET_DATE.isocalendar()
 target_week_str = f"{iso_year}-W{str(iso_week).zfill(2)}"
 
-# ==== Config paths ====
+# Config paths
 DATA_PATH = "regional_engineered_features_weekly.csv"
 
 ML_MODEL_DIR = "regional_ml_weekly_models"
@@ -39,14 +37,14 @@ LSTM_SCALER_DIR = "."               # weekly_scaler_{region}.save
 OUT_DIR = "hybrid_weekly_predictions"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# ==== Hyper ====
+
 SEQ_LEN = 12
 ML_WEIGHT = 0.7
 LSTM_WEIGHT = 0.3
 TARGET_COL = "Total_Attendances"
 REGION_COL = "Region_unified"
 
-# ==== Load data ====
+# Load data
 df_all = pd.read_csv(DATA_PATH, parse_dates=["Week"])
 df_all = df_all.sort_values("Week")
 
@@ -58,7 +56,7 @@ def ml_week_pred(region_df, region):
     """
     Returns ML prediction (float) or None if models/scaler missing.
     """
-    # Feature columns: numeric, excluding non-features
+    # Feature columns
     non_feats = [TARGET_COL, "Region", REGION_COL, "Type", "Week"]
     feature_cols = [c for c in region_df.select_dtypes(include=[np.number]).columns
                     if c not in non_feats]
@@ -75,7 +73,7 @@ def ml_week_pred(region_df, region):
     rf_model = joblib.load(rf_path)
     xgb_model = joblib.load(xgb_path)
 
-    # Build input features = mean of last SEQ_LEN weeks BEFORE target (validation) or last SEQ_LEN (forecast)
+    # Build input features = mean of last SEQ_LEN weeks before target (validation) or last SEQ_LEN (forecast)
     if TARGET_DATE in set(region_df["Week"]):
         # validation: use rows strictly before TARGET_DATE
         input_rows = region_df[region_df["Week"] < TARGET_DATE].tail(SEQ_LEN)
@@ -100,7 +98,7 @@ def ml_week_pred(region_df, region):
     rf_pred = float(rf_model.predict(X_scaled)[0])
     xgb_pred = float(xgb_model.predict(X_scaled)[0])
 
-    # Simple average (like your hybrid monthly did for ML block)
+    # Simple average 
     ml_pred = (rf_pred + xgb_pred) / 2.0
     return ml_pred
 
@@ -122,7 +120,7 @@ def lstm_week_pred(region_df, region):
     except Exception:
         return None
 
-    # Scaler was fit on numeric features + target (per your weekly LSTM modelling)
+    # Scaler was fit on numeric features + target 
     expected_features = list(scaler.feature_names_in_)
     input_features = [c for c in expected_features if c != TARGET_COL]
 
@@ -167,7 +165,7 @@ for region in regions:
         print(f"[WARNING] Not enough history for {region}. Skipping.")
         continue
 
-    # ---- Get ML + LSTM weekly predictions ----
+    #  ML + LSTM weekly predictions 
     ml_pred = ml_week_pred(region_df, region)
     lstm_pred = lstm_week_pred(region_df, region)
 
@@ -175,7 +173,7 @@ for region in regions:
         print(f"[WARNING] No prediction available for {region} (missing models/scalers or insufficient data).")
         continue
 
-    # Combine per weights (fallbacks if one side is missing)
+    # Combine per weights 
     if (ml_pred is not None) and (lstm_pred is not None):
         hybrid_pred = ML_WEIGHT * ml_pred + LSTM_WEIGHT * lstm_pred
     elif ml_pred is not None:
@@ -188,7 +186,7 @@ for region in regions:
     if TARGET_DATE in set(region_df["Week"]):
         actual_val = float(region_df.loc[region_df["Week"] == TARGET_DATE, TARGET_COL].values[0])
 
-    # ---- Print nicely ----
+    # Print 
     print(f"[RESULT] Region: {region}")
     print(f"  ML Prediction:     {ml_pred:.0f}" if ml_pred is not None else "  ML Prediction:     N/A")
     print(f"  LSTM Prediction:   {lstm_pred:.0f}" if lstm_pred is not None else "  LSTM Prediction:   N/A")
@@ -208,7 +206,7 @@ for region in regions:
         "MAPE": round(mean_absolute_percentage_error([actual_val],[hybrid_pred])*100, 2) if actual_val is not None else None
     })
     
-    # === Plot for THIS region ===
+    # Plot
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
     date_str = TARGET_DATE.strftime("%Y-W%U")
@@ -238,7 +236,7 @@ for region in regions:
     plt.savefig(f"forecast_plot_{region.replace(' ', '_')}_hybrid_weekly_{date_str}.png")
     plt.close()
 
-# ==== Save combined CSV ====
+# Save combined CSV 
 out_df = pd.DataFrame(results)
 out_csv = os.path.join(OUT_DIR, f"hybrid_weekly_predictions_{iso_year}_{str(iso_week).zfill(2)}.csv")
 out_df.to_csv(out_csv, index=False)

@@ -23,14 +23,14 @@ df = df.dropna(subset=[target_col])
 # Ensure output directories exist
 os.makedirs("regional_ml_monthly_outputs", exist_ok=True)
 os.makedirs("regional_ml_monthly_models", exist_ok=True)
-os.makedirs("regional_ml_monthly_scalers", exist_ok=True)  # New directory for scalers
+os.makedirs("regional_ml_monthly_scalers", exist_ok=True)  
 
 # Identify numeric feature columns only
 non_features = [target_col, region_col, date_col, "Region", "Type"]
 feature_cols = df.select_dtypes(include=[np.number]).columns.tolist()
 feature_cols = [col for col in feature_cols if col not in non_features]
 
-summary_results = []  # Collect summary info for all regions/models
+summary_results = []  # summary info for all regions/models
 
 # Process each of the 7 broader NHS regions
 for region in sorted(df[region_col].dropna().unique()):
@@ -53,7 +53,7 @@ for region in sorted(df[region_col].dropna().unique()):
     joblib.dump(scaler, scaler_path)
     print(f"[INFO] Saved scaler for {region} at {scaler_path}")
 
-    # Train-test split: last 7 months as test
+    # Train-test split
     train_size = len(X_scaled) - 7
     X_train, X_test = X_scaled[:train_size], X_scaled[train_size:]
     y_train, y_test = y.iloc[:train_size], y.iloc[train_size:]
@@ -98,8 +98,8 @@ for region in sorted(df[region_col].dropna().unique()):
         filename = f"{region.replace(' ', '_')}_{model_name}_forecast.csv"
         results_df.to_csv(os.path.join("regional_ml_monthly_outputs", filename), index=False)
 
-        # Plot forecast
-        # Plot forecast as line chart (consistent with LSTM monthly)
+        
+        # Plot forecast as line chart 
         plt.figure(figsize=(6, 4))
         plt.plot(dates_test, y_test.values, marker="o", label="Actual")
         plt.plot(dates_test, y_pred, marker="x", label="Predicted")
@@ -128,7 +128,7 @@ for region in sorted(df[region_col].dropna().unique()):
             "R2": r2
         })
 
-# After all regions/models, print summary table
+# print summary table
 summary_df = pd.DataFrame(summary_results)
 print("[INFO] ML Monthly Modeling Summary:")
 print(summary_df.to_string(index=False))

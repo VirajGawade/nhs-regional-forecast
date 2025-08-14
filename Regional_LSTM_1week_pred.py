@@ -17,7 +17,7 @@ from keras.models import load_model
 # Restore normal stderr after TensorFlow setup
 stderr = sys.stderr
 sys.stderr = open(os.devnull, "w")
-# TensorFlow is imported above, so no need to re-import here
+
 sys.stderr = stderr
 
 # CLI args 
@@ -168,7 +168,7 @@ plt.tight_layout()
 plt.grid(True, axis="y")
 plt.show()
 
-# --- Added Summary Output ---
+# Summary Output
 summary_df = pd.DataFrame(results)
 
 print("\n[INFO] Weekly LSTM 1-week Prediction Summary:")

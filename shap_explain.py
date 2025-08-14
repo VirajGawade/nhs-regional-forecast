@@ -1,19 +1,13 @@
-# shap_weekly.py
-# Compatible with old/new SHAP versions; explains ML (XGBoost/RandomForest) models
-# Monthly and Weekly modes (pick with --granularity)
-
 import os
 import argparse
 import joblib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-# ---- Optional but nice: quiet some noisy deps
 import warnings
 warnings.filterwarnings("ignore")
 
-# ------------------- CONFIG -------------------
+# Config
 MONTHLY_DATA = "regional_engineered_features.csv"
 WEEKLY_DATA  = "regional_engineered_features_weekly.csv"
 
@@ -27,10 +21,9 @@ TARGET     = "Total_Attendances"
 REGION_COL = "Region_unified"
 OUT_DIR    = "shap_outputs"
 os.makedirs(OUT_DIR, exist_ok=True)
-# ---------------------------------------------
 
 
-# -------------- SHAP compatibility --------------
+# SHAP compatibility
 import shap
 
 def make_explainer(model):
@@ -41,7 +34,7 @@ def make_explainer(model):
     try:
         return shap.Explainer(model)  # SHAP >= 0.36
     except AttributeError:
-        return shap.TreeExplainer(model)  # older SHAP
+        return shap.TreeExplainer(model)  
 
 def plot_shap_bar(shap_values, max_display=15, out_path=None):
     """
@@ -62,9 +55,7 @@ def plot_shap_bar(shap_values, max_display=15, out_path=None):
 def plot_shap_waterfall(shap_values, out_path=None, max_display=15):
     """
     Waterfall with dynamic left-margin adjustment:
-    - Detect numeric labels, measure the widest negative (blue) value.
-    - Expand the left margin so feature names don't overlap.
-    - Redraw all numeric labels on the RIGHT side for consistency.
+    
     """
     try:
         from matplotlib import transforms
@@ -76,7 +67,7 @@ def plot_shap_waterfall(shap_values, out_path=None, max_display=15):
         ax = plt.gca()
         fig.canvas.draw()  # ensure artists exist
 
-        # --- collect numeric labels and their y positions ---
+        # collect numeric labels and their y positions
         num_re = re.compile(r"^[\+\-−]?\d+(\.\d+)?(e[\+\-]?\d+)?$")
         labels = []
         neg_text_objs = []
@@ -88,7 +79,7 @@ def plot_shap_waterfall(shap_values, out_path=None, max_display=15):
                     neg_text_objs.append(txt)
                 txt.set_visible(False)  # hide originals
 
-        # --- dynamic left margin based on widest blue label ---
+        # dynamic left margin based on widest blue label 
         new_left = 0.50
         if neg_text_objs:
             renderer = fig.canvas.get_renderer()
@@ -98,7 +89,7 @@ def plot_shap_waterfall(shap_values, out_path=None, max_display=15):
             new_left = min(0.85, max(0.50, 0.50 + extra_left_frac))
 
 
-        # --- redraw all numeric labels on the RIGHT side ---
+        # redraw all numeric labels on the right side
         trans = transforms.blended_transform_factory(ax.transAxes, ax.transData)
         for s, y in labels:
             ax.text(0.99, y, s, transform=trans, ha="right", va="center")
@@ -111,10 +102,8 @@ def plot_shap_waterfall(shap_values, out_path=None, max_display=15):
         plt.close(fig)
     except Exception:
         pass
-# ------------------------------------------------
 
-
-# ----------------- UTILITIES -----------------
+# utilities
 def numeric_feature_cols(df, drop_cols):
     return [c for c in df.select_dtypes(include=[np.number]).columns if c not in drop_cols]
 
@@ -123,10 +112,9 @@ def ensure_cols(df, cols):
     if missing:
         raise ValueError(f"Missing expected columns: {missing}")
     return df[cols]
-# ---------------------------------------------
 
 
-# ----------------- MONTHLY -------------------
+# monthly
 def explain_monthly(region: str, year: int, month: int, model_name: str):
     """
     Explains a single monthly prediction for a region using the saved ML model.
@@ -197,10 +185,9 @@ def explain_monthly(region: str, year: int, month: int, model_name: str):
         "bar_png": bar_png,
         "waterfall_png": wtf_png
     }
-# ---------------------------------------------
 
 
-# ------------------ WEEKLY -------------------
+# weekly
 def explain_weekly(region: str, year: int, month: int, day: int, model_name: str):
     """
     Explains a single weekly prediction for a region using the saved ML model.
@@ -247,11 +234,11 @@ def explain_weekly(region: str, year: int, month: int, day: int, model_name: str
 
     X = pd.DataFrame([window[feature_cols].mean()], columns=feature_cols)
 
-    # Align to scaler expected columns; drop target if present
+    # Align to scaler expected columns
     expected = list(getattr(scaler, "feature_names_in_", feature_cols))
     if TARGET in expected:
         expected.remove(TARGET)
-    # Ensure all exist; this will raise if mismatch
+    # Ensure all exist
     X = ensure_cols(X, expected)
 
     # keep feature names after scaling
@@ -284,10 +271,9 @@ def explain_weekly(region: str, year: int, month: int, day: int, model_name: str
         "bar_png": bar_png,
         "waterfall_png": wtf_png
     }
-# ---------------------------------------------
 
 
-# -------------------- CLI --------------------
+# CLI 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="SHAP explanations for NHS A&E ML models (monthly/weekly).")
     p.add_argument("--granularity", choices=["monthly", "weekly"], required=True)

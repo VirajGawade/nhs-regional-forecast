@@ -7,10 +7,11 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import matplotlib.ticker as ticker
+
 # Paths
 DATA_PATH = "regional_engineered_features_weekly.csv"
 MODEL_DIR = "regional_ml_weekly_models"
-SCALER_DIR = "regional_ml_weekly_scalers"  # scaler directory added
+SCALER_DIR = "regional_ml_weekly_scalers"  
 FORECAST_DIR = "regional_ml_weekly_forecasts"
 PLOT_DIR = "regional_ml_weekly_plots"
 os.makedirs(FORECAST_DIR, exist_ok=True)

@@ -4,16 +4,16 @@ import os
 from sklearn.ensemble import RandomForestRegressor
 from xgboost import XGBRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.preprocessing import StandardScaler  # <-- Added scaler import
+from sklearn.preprocessing import StandardScaler  
 import joblib
 
 # Directories
 MODEL_DIR = "regional_ml_weekly_models"
 FORECAST_DIR = "regional_ml_weekly_forecasts"
-SCALER_DIR = "regional_ml_weekly_scalers"  # New directory for scalers
+SCALER_DIR = "regional_ml_weekly_scalers"  
 os.makedirs(MODEL_DIR, exist_ok=True)
 os.makedirs(FORECAST_DIR, exist_ok=True)
-os.makedirs(SCALER_DIR, exist_ok=True)  # Ensure scaler directory exists
+os.makedirs(SCALER_DIR, exist_ok=True)  
 
 # Load dataset
 df = pd.read_csv("regional_engineered_features_weekly.csv")

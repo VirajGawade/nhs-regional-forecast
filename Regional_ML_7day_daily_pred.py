@@ -12,7 +12,7 @@ SCALER_DIR = "regional_ml_weekly_scalers"
 FORECAST_DIR = "regional_ml_7day_daily_forecasts"
 os.makedirs(FORECAST_DIR, exist_ok=True)
 
-# Daily proportions (same as LSTM 7-day script)
+# Daily proportions 
 DAILY_PROPORTIONS = {
     "Monday": 0.175,
     "Tuesday": 0.165,
@@ -108,7 +108,7 @@ for region in regions:
     rf_daily_ints  = split_week_to_days(rf_weekly_pred)
     xgb_daily_ints = split_week_to_days(xgb_weekly_pred)
 
-    # Print results (weekly printed as rounded so it matches the sum of dailies)
+    # Print results 
     print(f"[INFO] RandomForest Forecasted Weekly Total: {int(round(rf_weekly_pred)):,}")
     print(f"[INFO] XGBoost   Forecasted Weekly Total: {int(round(xgb_weekly_pred)):,}")
     print("[INFO] 7-Day Breakdown:")
@@ -116,7 +116,7 @@ for region in regions:
         day_date = week_start_date + timedelta(days=i)
         print(f"[INFO]   {day} ({day_date.date()}): RF={rf_daily_ints[day]:,} | XGB={xgb_daily_ints[day]:,}")
 
-    # Save forecast CSV (store the integer daily values)
+    # Save forecast CSV 
     forecast_data = []
     for i, day in enumerate(DAILY_PROPORTIONS.keys()):
         day_date = week_start_date + timedelta(days=i)
@@ -143,7 +143,7 @@ for region in regions:
 # Create dataframe for plotting
 df_result = pd.DataFrame(all_results)
 
-# === Plot ML 7-Day Daily Forecast (line chart like LSTM) ===
+# Plot ML 7-Day Daily Forecast (line chart) 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 

@@ -18,7 +18,7 @@ import matplotlib.ticker as ticker
 df = pd.read_csv("regional_engineered_features.csv", parse_dates=["Month"])
 df = df.sort_values(["Region_unified", "Month"]).reset_index(drop=True)
 
-# Assuming you collect results in a list during loop:
+# Assuming you collect results in a list during loop
 results = []
 # Loop over regions 
 regions = df["Region_unified"].unique()
@@ -109,7 +109,7 @@ for region in regions:
     [INFO] Accuracy: {acc:.2f}%
     """)
 
-    # Inside loop, after metrics calculation, add:
+    # Inside loop after metrics calculation, add
     results.append({
         "Region": region,
         "MAE": mae,

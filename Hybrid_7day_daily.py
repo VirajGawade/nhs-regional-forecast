@@ -9,11 +9,11 @@ from tensorflow.keras.models import load_model
 # Config
 DATA_PATH = "regional_engineered_features_weekly.csv"
 
-# ML artifacts
+# ML 
 ML_MODEL_DIR = "regional_ml_weekly_models"
 ML_SCALER_DIR = "regional_ml_weekly_scalers"
 
-# LSTM artifacts
+# LSTM 
 LSTM_MODEL_DIR = "."
 LSTM_SCALER_DIR = "."
 
@@ -218,7 +218,7 @@ out_path = os.path.join(OUT_DIR, f"hybrid_7day_daily_{iso_week_str}.csv")
 pd.DataFrame(all_rows).to_csv(out_path, index=False)
 print(f"\n[INFO] Saved hybrid 7-day daily forecasts to {out_path}")
 
-# === NEW: Combined regional line plot ===
+# Combined regional line plot 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 

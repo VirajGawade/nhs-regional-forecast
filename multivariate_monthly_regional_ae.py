@@ -62,7 +62,7 @@ for file_path in glob(os.path.join(DATA_FOLDER, "*.csv")):
         if region_col is None:
             raise KeyError("No 'Region', 'Parent Org', or 'Org name' column found")
 
-        # Exclude total rows robustly (strip spaces and ignore case)
+        # Exclude total rows robustly 
         df = df[~df[region_col].astype(str).str.strip().str.upper().eq("TOTAL")]
 
         # Find all columns we want using fuzzy matching

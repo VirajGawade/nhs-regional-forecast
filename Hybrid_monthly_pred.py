@@ -24,8 +24,8 @@ date_str = target_date.strftime("%Y-%m")
 DATA_PATH = "regional_engineered_features.csv"
 ML_MODEL_DIR = "regional_ml_monthly_models"
 ML_SCALER_DIR = "regional_ml_monthly_scalers"
-LSTM_MODEL_DIR = "."  # Assuming LSTM models saved in current folder as lstm_model_{region}.keras
-LSTM_SCALER_DIR = "."  # Assuming scalers saved as scaler_{region}.save
+LSTM_MODEL_DIR = "."  # lstm_model_{region}.keras
+LSTM_SCALER_DIR = "."  # scaler_{region}.save
 
 SEQ_LEN = 12
 ML_WEIGHT = 0.7
@@ -53,7 +53,7 @@ for region in regions:
         print(f"[WARNING] Not enough data for region {region}. Skipping...")
         continue
 
-    # === ML prediction ===
+    # ML prediction
     ml_model_path_xgb = os.path.join(ML_MODEL_DIR, f"{region.replace(' ', '_')}_XGBoost_monthly.pkl")
     ml_model_path_rf = os.path.join(ML_MODEL_DIR, f"{region.replace(' ', '_')}_RandomForest_monthly.pkl")
     ml_scaler_path = os.path.join(ML_SCALER_DIR, f"{region.replace(' ', '_')}_scaler.save")
@@ -78,7 +78,7 @@ for region in regions:
         # Average RF and XGB predictions for ML prediction
         ml_pred = (xgb_pred + rf_pred) / 2
 
-    # === LSTM prediction ===
+    # LSTM prediction
     lstm_model_path = os.path.join(LSTM_MODEL_DIR, f"lstm_model_{region}.keras")
     lstm_scaler_path = os.path.join(LSTM_SCALER_DIR, f"scaler_{region}.save")
 
@@ -115,7 +115,7 @@ for region in regions:
         inv_scaled = lstm_scaler.inverse_transform([last_frame])
         lstm_pred = inv_scaled[0][target_idx]
 
-    # === Combine predictions ===
+    # Combine predictions 
     if (ml_pred is not None) and (lstm_pred is not None):
         hybrid_pred = ML_WEIGHT * ml_pred + LSTM_WEIGHT * lstm_pred
     elif ml_pred is not None:
@@ -149,8 +149,8 @@ for region in regions:
         "MAPE": round(mape, 2) if actual_val is not None else None
     })
 
-    # === Plot for THIS region ===
-        # === Plot for THIS region ===
+    # Plot 
+        
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
 
@@ -189,7 +189,7 @@ for region in regions:
     plt.close()
 
 
-# === Save combined CSV AFTER loop ===
+# Save combined CSV 
 results_df = pd.DataFrame(results)
 results_csv_path = f"hybrid_monthly_predictions_{YEAR}_{MONTH:02d}.csv"
 results_df.to_csv(results_csv_path, index=False)
