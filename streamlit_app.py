@@ -96,32 +96,92 @@ if granularity in ["Weekly", "Daily"]:
 
 tabs = st.tabs(["Hybrid (Default)", "ML", "LSTM", "SHAP Explainability (ML Only)"])
 
+
 # Hybrid tab 
 with tabs[0]:
     script = SCRIPT_MAP[granularity]["Hybrid"]
+
+    start_time = time.time()  # Track start time
     output = run_script(script, year, month, day)
     if region != "All":
         output = filter_by_region(output, region)
     st.subheader(f"{granularity} - Hybrid Prediction")
     st.code(output)
 
+    # Download plots generated in this run
+    plot_files = []
+    for f in Path(BASE_DIR).rglob("*.png"):
+        if f.stat().st_mtime > start_time:
+            plot_files.append(f)
+
+    if plot_files:
+        st.write("Download generated plots:")
+        for plot_path in sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True):
+            with open(plot_path, "rb") as img_file:
+                st.download_button(
+                    label=f"Download {plot_path.name}",
+                    data=img_file,
+                    file_name=plot_path.name,
+                    mime="image/png"
+                )
+   
+
 # ML tab 
 with tabs[1]:
     script = SCRIPT_MAP[granularity]["ML"]
+
+    start_time = time.time()  # Track start time
     output = run_script(script, year, month, day)
     if region != "All":
         output = filter_by_region(output, region)
     st.subheader(f"{granularity} - ML Prediction")
     st.code(output)
 
+    # Download plots generated in this run
+    plot_files = []
+    for f in Path(BASE_DIR).rglob("*.png"):
+        if f.stat().st_mtime > start_time:
+            plot_files.append(f)
+
+    if plot_files:
+        st.write("Download generated plots:")
+        for plot_path in sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True):
+            with open(plot_path, "rb") as img_file:
+                st.download_button(
+                    label=f"Download {plot_path.name}",
+                    data=img_file,
+                    file_name=plot_path.name,
+                    mime="image/png"
+                )
+
+
 # LSTM tab 
 with tabs[2]:
     script = SCRIPT_MAP[granularity]["LSTM"]
+
+    start_time = time.time()  # Track start time
     output = run_script(script, year, month, day)
     if region != "All":
         output = filter_by_region(output, region)
     st.subheader(f"{granularity} - LSTM Prediction")
     st.code(output)
+
+    # Download plots generated in this run
+    plot_files = []
+    for f in Path(BASE_DIR).rglob("*.png"):
+        if f.stat().st_mtime > start_time:
+            plot_files.append(f)
+
+    if plot_files:
+        st.write("Download generated plots:")
+        for plot_path in sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True):
+            with open(plot_path, "rb") as img_file:
+                st.download_button(
+                    label=f"Download {plot_path.name}",
+                    data=img_file,
+                    file_name=plot_path.name,
+                    mime="image/png"
+                )
 
 # SHAP tab 
 with tabs[3]:
