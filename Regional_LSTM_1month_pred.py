@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TF info/warnings before TF import
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TF msg
 warnings.filterwarnings("ignore", category=UserWarning)  # Ignore Keras UserWarnings
 tf.get_logger().setLevel('ERROR')  # Suppress TF logs below ERROR level
 
@@ -31,7 +31,7 @@ REGIONS = [
 ]
 SEQ_LEN = 12
 target_date = pd.Timestamp(year=YEAR, month=MONTH, day=1)
-date_str = target_date.strftime("%Y-%m")  # For filenames
+date_str = target_date.strftime("%Y-%m")  
 
 # Load Data 
 df_all = pd.read_csv(DATA_PATH, parse_dates=["Month"])
@@ -39,7 +39,7 @@ df_all = df_all.sort_values("Month")
 
 # Collect all results
 all_results = []
-results = []  # summary collection
+results = []  # summary 
 
 for REGION in REGIONS:
     df = df_all[df_all["Region_unified"] == REGION].copy()
@@ -142,6 +142,13 @@ for REGION in REGIONS:
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
     plt.tight_layout()
+    for p in plt.gca().patches:
+        plt.gca().annotate(
+            f'{p.get_height():,.0f}',          
+            (p.get_x() + p.get_width() / 2, p.get_height()), 
+            ha='center', va='bottom', fontsize=9
+        )
+
     plt.savefig(f"forecast_plot_{REGION}_{date_str}.png")
     plt.close()
 

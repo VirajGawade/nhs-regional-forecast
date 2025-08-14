@@ -1,7 +1,6 @@
 import argparse
 import os
 from datetime import datetime, timedelta
-
 import joblib
 import numpy as np
 import pandas as pd
@@ -98,7 +97,7 @@ def ml_week_pred(region_df, region):
     rf_pred = float(rf_model.predict(X_scaled)[0])
     xgb_pred = float(xgb_model.predict(X_scaled)[0])
 
-    # Simple average 
+    # average 
     ml_pred = (rf_pred + xgb_pred) / 2.0
     return ml_pred
 
@@ -130,7 +129,7 @@ def lstm_week_pred(region_df, region):
     else:
         df_hist = region_df.copy()
 
-    # Need all expected columns
+    # all expected columns
     try:
         scaled = scaler.transform(df_hist[expected_features])
     except Exception:
@@ -232,6 +231,12 @@ for region in regions:
     plt.ylabel("Total Attendances")
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+    for p in plt.gca().patches:
+        plt.gca().annotate(
+            f'{p.get_height():,.0f}',          
+            (p.get_x() + p.get_width() / 2, p.get_height()),  
+            ha='center', va='bottom', fontsize=9
+        )
     plt.tight_layout()
     plt.savefig(f"forecast_plot_{region.replace(' ', '_')}_hybrid_weekly_{date_str}.png")
     plt.close()

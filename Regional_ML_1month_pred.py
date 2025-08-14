@@ -67,7 +67,7 @@ for region in sorted(df[region_col].dropna().unique()):
         actual = match_row[target_col].values[0]
         mode = "validation"
     else:
-        # Forecast mode: average of last 12 months features
+        # Forecast mode
         forecast_input = region_df[region_df[date_col] < target_date].copy().tail(12)
         if len(forecast_input) < 12:
             print(f" Not enough past data to forecast for {region}. Skipping...")
@@ -149,6 +149,13 @@ for region in sorted(df[region_col].dropna().unique()):
         plt.ylabel("Attendances")
         ax = plt.gca()
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+        for p in plt.gca().patches:
+            plt.gca().annotate(
+                f'{p.get_height():,.0f}',          
+                (p.get_x() + p.get_width() / 2, p.get_height()),  
+                ha='center', va='bottom', fontsize=9
+            )
+
         plt.tight_layout()
         out_png = os.path.join("regional_ml_1month_predictions", f"{region.replace(' ', '_')}_{model_name}_prediction_plot.png")
         plt.savefig(out_png)
@@ -156,7 +163,7 @@ for region in sorted(df[region_col].dropna().unique()):
 
 print("\nAll regional 1-month predictions completed.")
 
-# Summary output like LSTM monthly modeling
+# Summary output 
 summary_df = pd.DataFrame(results)
 summary_df = summary_df[["Region", "Model", "MAE", "RMSE", "MAPE (%)", "Accuracy (%)"]]
 print("\n[INFO] ML Monthly 1-Month Prediction Summary:")

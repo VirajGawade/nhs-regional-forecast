@@ -8,7 +8,7 @@ from tensorflow.keras.layers import LSTM, Dropout, Dense
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint, LearningRateScheduler
 import matplotlib.pyplot as plt
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow INFO and WARNING messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TensorFlow messages
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)  # Suppress Keras UserWarnings
 import tensorflow as tf
@@ -24,7 +24,7 @@ regions = df["Region_unified"].unique()
 SEQ_LEN = 12
 SPLIT_DATE = pd.Timestamp("2024-11-01")
 
-all_results = []  # Collect summary results here
+all_results = []  # Collect summary 
 
 for region in regions:
     print(f"\n Training weekly LSTM for region: {region}")

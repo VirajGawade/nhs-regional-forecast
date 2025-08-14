@@ -1,5 +1,5 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # suppress TensorFlow INFO/WARNING messages
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # suppress TensorFlow messages
 import sys
 import pandas as pd
 import numpy as np
@@ -148,25 +148,52 @@ result_df = result_df.sort_values("Region")
 result_df.to_csv("weekly_prediction_all_regions.csv", index=False)
 
 # Plot
-plt.figure(figsize=(10, 6))
-bar_width = 0.4
-x = np.arange(len(result_df))
+PLOT_DIR = "regional_lstm_weekly_plots"
+os.makedirs(PLOT_DIR, exist_ok=True)
 
-if result_df["Actual"].notna().all():
-    plt.bar(x - bar_width / 2, result_df["Actual"], width=bar_width, label="Actual", color="blue")
-    plt.bar(x + bar_width / 2, result_df["Predicted"], width=bar_width, label="Predicted", color="orange")
-else:
-    plt.bar(x, result_df["Predicted"], width=bar_width, label="Predicted", color="orange")
+for _, row in result_df.iterrows():
+    region = row["Region"]
+    actual = row["Actual"]
+    predicted = row["Predicted"]
 
-plt.xticks(x, result_df["Region"], rotation=45, ha="right")
-plt.ylabel("Total Attendances")
-plt.title(f"Weekly LSTM Prediction — Week Ending {TARGET_DATE.date()}")
-plt.legend()
-ax = plt.gca()
-ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
-plt.tight_layout()
-plt.grid(True, axis="y")
-plt.show()
+    plt.figure(figsize=(5, 5))  
+
+    # bars 
+    if pd.notna(actual):
+        plt.bar(["Actual", "Predicted"], [actual, predicted], color=["blue", "orange"])
+        plt.title(f"{region} - LSTM Validation (Week Ending {TARGET_DATE.date()})")
+    else:
+        plt.bar(["Actual", "Predicted"], [0, predicted], color=["blue", "orange"])
+        plt.title(f"{region} - LSTM Forecast (Week Ending {TARGET_DATE.date()})")
+
+    plt.ylabel("Total Attendances")
+    
+    bars = plt.bar(
+    ["Actual", "Predicted"],
+    [actual if pd.notna(actual) else 0, predicted],
+    color=["blue", "orange"],
+    width=0.5
+    )
+
+    # Add values on top of bars
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x() + bar.get_width()/2, height, f"{int(height):,}",
+                 ha='center', va='bottom', fontsize=10)
+    # Format y-axis 
+    ax = plt.gca()
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))    
+    plt.grid(False)
+    plt.tight_layout()
+
+    # Save plot
+    plot_filename = f"{region.replace(' ', '_')}_weekly_lstm_{TARGET_DATE.date()}.png"
+    plt.savefig(os.path.join(PLOT_DIR, plot_filename))
+    plt.close()
+
+    print(f"[INFO] Saved plot to {plot_filename}")
+
+
 
 # Summary Output
 summary_df = pd.DataFrame(results)

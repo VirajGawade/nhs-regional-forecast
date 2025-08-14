@@ -116,14 +116,17 @@ with tabs[0]:
 
     if plot_files:
         st.write("Download generated plots:")
-        for plot_path in sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True):
+        for i, plot_path in enumerate(sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True)):
             with open(plot_path, "rb") as img_file:
                 st.download_button(
                     label=f"Download {plot_path.name}",
                     data=img_file,
                     file_name=plot_path.name,
-                    mime="image/png"
+                    mime="image/png",
+                    key=f"download_hybrid_{granularity}_{i}"
                 )
+
+
    
 
 # ML tab 
@@ -145,14 +148,16 @@ with tabs[1]:
 
     if plot_files:
         st.write("Download generated plots:")
-        for plot_path in sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True):
+        for i, plot_path in enumerate(sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True)):
             with open(plot_path, "rb") as img_file:
                 st.download_button(
                     label=f"Download {plot_path.name}",
                     data=img_file,
                     file_name=plot_path.name,
-                    mime="image/png"
+                    mime="image/png",
+                    key=f"download_ml_{granularity}_{i}"
                 )
+
 
 
 # LSTM tab 
@@ -174,14 +179,16 @@ with tabs[2]:
 
     if plot_files:
         st.write("Download generated plots:")
-        for plot_path in sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True):
+        for i, plot_path in enumerate(sorted(plot_files, key=lambda x: x.stat().st_mtime, reverse=True)):
             with open(plot_path, "rb") as img_file:
                 st.download_button(
                     label=f"Download {plot_path.name}",
                     data=img_file,
                     file_name=plot_path.name,
-                    mime="image/png"
+                    mime="image/png",
+                    key=f"download_lstm_{granularity}_{i}"
                 )
+
 
 # SHAP tab 
 with tabs[3]:

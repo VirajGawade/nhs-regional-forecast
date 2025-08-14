@@ -1,0 +1,8 @@
+Region,Date,Day,RandomForest,XGBoost
+London,2025-05-26,Monday,16555,16566
+London,2025-05-27,Tuesday,15609,15619
+London,2025-05-28,Wednesday,14663,14673
+London,2025-05-29,Thursday,13717,13726
+London,2025-05-30,Friday,12771,12779
+London,2025-05-31,Saturday,10406,10413
+London,2025-06-01,Sunday,10884,10889

@@ -218,7 +218,7 @@ def explain_weekly(region: str, year: int, month: int, day: int, model_name: str
     scaler = joblib.load(scaler_path)
     model  = joblib.load(model_path)
 
-    # Build input per your ML weekly logic
+    # Build input per ML weekly logic
     if week_end in set(region_df["Week"]):
         window = region_df[region_df["Week"] < week_end].tail(12)
         if len(window) < 12:

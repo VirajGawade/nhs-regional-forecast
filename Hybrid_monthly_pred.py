@@ -184,6 +184,12 @@ for region in regions:
     plt.ylabel("Total Attendances")
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+    for p in plt.gca().patches:
+        plt.gca().annotate(
+            f'{p.get_height():,.0f}',          
+            (p.get_x() + p.get_width() / 2, p.get_height()),  
+            ha='center', va='bottom', fontsize=9
+        )
     plt.tight_layout()
     plt.savefig(f"forecast_plot_{region.replace(' ', '_')}_hybrid_monthly_{date_str}.png")
     plt.close()

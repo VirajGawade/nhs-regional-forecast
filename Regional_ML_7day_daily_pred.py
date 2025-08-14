@@ -90,7 +90,7 @@ for region in regions:
     rf_weekly_pred = rf_model.predict(input_scaled)[0]
     xgb_weekly_pred = xgb_model.predict(input_scaled)[0]
 
-    # Split into daily predictions (floor Mon–Sat, leftover on Sunday)
+    # Split into daily predictions (floor Mon to Sat, leftover on Sunday)
     def split_week_to_days(total):
         total_int = int(round(total))
         days = list(DAILY_PROPORTIONS.keys())
@@ -143,7 +143,7 @@ for region in regions:
 # Create dataframe for plotting
 df_result = pd.DataFrame(all_results)
 
-# Plot ML 7-Day Daily Forecast (line chart) 
+# Plot ML 7day daily forecast (line chart) 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 

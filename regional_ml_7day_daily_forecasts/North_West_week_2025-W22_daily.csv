@@ -1,0 +1,8 @@
+Region,Date,Day,RandomForest,XGBoost
+North West,2025-05-26,Monday,13170,13093
+North West,2025-05-27,Tuesday,12418,12345
+North West,2025-05-28,Wednesday,11665,11597
+North West,2025-05-29,Thursday,10912,10849
+North West,2025-05-30,Friday,10160,10100
+North West,2025-05-31,Saturday,8278,8230
+North West,2025-06-01,Sunday,8658,8608

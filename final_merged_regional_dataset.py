@@ -80,8 +80,7 @@ for df in region_dfs:
 for df in [weather, ukhsa, google, fingertips]:
     merged = pd.merge(merged, df, on="Month", how="left")
 
-# MISSING VALUE IMPUTATION 
-
+# Missing value imputation
 #  Fill flu, covid, syndrome signals by calendar month median
 for col in merged.columns:
     if any(sig in col.lower() for sig in ["flu", "covid", "syndrome"]):
@@ -103,7 +102,7 @@ for col in merged.columns:
     if pd.api.types.is_numeric_dtype(merged[col]) and merged[col].isna().sum() > 0:
         merged[col] = merged[col].ffill().bfill().fillna(merged[col].median())
 
-#  CLEAN UP _x/_y DUPLICATE COLUMNS 
+#  Clean up _x/_y duplicate columns
 cols = merged.columns.tolist()
 base_names = set()
 for col in cols:
@@ -155,7 +154,6 @@ final_order = base_cols + extra_cols
 
 # Apply column order
 merged = merged[final_order]
-
 merged["Type"] = merged["Type"].fillna("T1")
 # REMOVE exact duplicate rows (keep only first occurrence)
 merged = merged.drop_duplicates(keep='first')

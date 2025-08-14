@@ -68,7 +68,7 @@ for region in regions:
     mean_features = input_row[feature_cols].mean()
     input_features = pd.DataFrame([mean_features], columns=feature_cols)
 
-    # Align columns to scaler's expected features (exclude target if present)
+    # Align columns to scaler's expected features 
     expected_cols = list(scaler.feature_names_in_)
     if target_col in expected_cols:
         expected_cols.remove(target_col)
@@ -205,6 +205,12 @@ for region in regions:
     plt.ylabel("Total Attendances")
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+    for p in plt.gca().patches:
+        plt.gca().annotate(
+            f'{p.get_height():,.0f}',          
+            (p.get_x() + p.get_width() / 2, p.get_height()),  
+            ha='center', va='bottom', fontsize=9
+        )
     plt.tight_layout()
     rf_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_rf.png")
     plt.savefig(rf_plot_path)
@@ -226,6 +232,12 @@ for region in regions:
     plt.ylabel("Total Attendances")
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+    for p in plt.gca().patches:
+        plt.gca().annotate(
+            f'{p.get_height():,.0f}',           
+            (p.get_x() + p.get_width() / 2, p.get_height()), 
+            ha='center', va='bottom', fontsize=9
+        )
     plt.tight_layout()
     xgb_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_xgb.png")
     plt.savefig(xgb_plot_path)

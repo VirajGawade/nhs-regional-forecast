@@ -72,7 +72,7 @@ for file_path in glob(os.path.join(DATA_FOLDER, "*.csv")):
             if col_name is not None:
                 cols_found[key] = col_name
             else:
-                cols_found[key] = None  # Will handle missing columns
+                cols_found[key] = None  # handle missing columns
 
         grouped = df.groupby(region_col)
 

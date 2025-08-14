@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import tensorflow as tf
 from keras.models import load_model
-
-# Suppress TensorFlow logging
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 stderr = sys.stderr
 sys.stderr = open(os.devnull, "w")
@@ -111,7 +109,7 @@ for region in regions:
     print("[INFO] 7-Day Breakdown:")
     
     
-    # Split into 7 days (floor Mon–Sat, leftover on Sunday)
+    # Split into 7 days (floor Mon to Sat, leftover on Sunday)
     total_int = int(round(weekly_total))
     daily_ints = []
     remaining = total_int
