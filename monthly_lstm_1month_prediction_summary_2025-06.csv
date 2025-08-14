@@ -1,0 +1,8 @@
+Region,Month,Predicted,Actual,MAE,RMSE,MAPE (%),Accuracy (%)
+London,2025-06,402574,,,,,
+East of England,2025-06,230950,,,,,
+South East,2025-06,359102,,,,,
+South West,2025-06,195463,,,,,
+Midlands,2025-06,418269,,,,,
+North West,2025-06,306773,,,,,
+North East and Yorkshire,2025-06,345670,,,,,

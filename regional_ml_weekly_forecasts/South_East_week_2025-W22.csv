@@ -1,0 +1,3 @@
+Region,Week,Model,Predicted
+South East,2025-06-01,RandomForest,84433.35971564768
+South East,2025-06-01,XGBoost,82849.4609375

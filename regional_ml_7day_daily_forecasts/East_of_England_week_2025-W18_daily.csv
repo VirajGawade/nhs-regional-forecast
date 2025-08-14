@@ -1,0 +1,8 @@
+Region,Date,Day,RandomForest,XGBoost
+East of England,2025-04-28,Monday,9110,8964
+East of England,2025-04-29,Tuesday,8589,8452
+East of England,2025-04-30,Wednesday,8069,7940
+East of England,2025-05-01,Thursday,7548,7427
+East of England,2025-05-02,Friday,7028,6915
+East of England,2025-05-03,Saturday,5726,5634
+East of England,2025-05-04,Sunday,5990,5894

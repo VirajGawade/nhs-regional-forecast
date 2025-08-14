@@ -1,0 +1,2 @@
+Region,Week,Model,Predicted,Actual,MAE,MAPE
+North West,2025-05-25,RandomForest,69736,90865,21129.370548084407,23.25340421687114

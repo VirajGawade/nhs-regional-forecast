@@ -1,0 +1,8 @@
+Region,Week,Actual,Predicted,MAE,RMSE,MAPE,Accuracy
+East of England,2025-06-01,,55997.44546856937,,,,
+London,2025-06-01,,95518.42762782401,,,,
+Midlands,2025-06-01,,98919.14912829304,,,,
+North East and Yorkshire,2025-06-01,,82302.13953179777,,,,
+North West,2025-06-01,,73732.29716193942,,,,
+South East,2025-06-01,,80586.89413237489,,,,
+South West,2025-06-01,,49018.68614771476,,,,

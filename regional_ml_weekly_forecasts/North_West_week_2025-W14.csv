@@ -1,0 +1,3 @@
+Region,Week,Model,Predicted
+North West,2025-04-06,RandomForest,65372.119664883016
+North West,2025-04-06,XGBoost,66815.8359375
