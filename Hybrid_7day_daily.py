@@ -180,38 +180,31 @@ for region in regions:
             "Hybrid_Daily": int(val),
         })
 
-    # Per-region weekly total bar plot
+    # Per-region daily total line plot
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
     date_str = week_end.strftime("%Y-W%U")
-    actual_week_total = None
-    if week_end in set(region_df["Week"]):
-        actual_week_total = int(region_df.loc[region_df["Week"] == week_end, TARGET_COL].values[0])
 
-    plt.figure(figsize=(5, 5))
-    if actual_week_total is not None:
-        plt.bar(["Actual", "ML", "LSTM", "Hybrid"],
-                [actual_week_total,
-                 ml_week if ml_week is not None else 0,
-                 lstm_week if lstm_week is not None else 0,
-                 hybrid_week],
-                color=["blue", "green", "purple", "orange"])
-        plt.title(f"{region} - Hybrid 7-Day Daily Validation ({date_str})")
-    else:
-        plt.bar(["Actual", "ML", "LSTM", "Hybrid"],
-                [0,
-                 ml_week if ml_week is not None else 0,
-                 lstm_week if lstm_week is not None else 0,
-                 hybrid_week],
-                color=["blue", "green", "purple", "orange"])
-        plt.title(f"{region} - Hybrid 7-Day Daily Forecast ({date_str})")
+    # Prepare daily dates and values
+    daily_dates = [(week_start + timedelta(days=i)).date() for i in range(7)]
+    daily_values = list(daily_hybrid.values())
 
-    plt.ylabel("Total Attendances (Weekly)")
+    plt.figure(figsize=(8, 5))
+    plt.plot(daily_dates, daily_values, marker='o', color='orange', label='Hybrid Prediction')
+
+    plt.xlabel("Date")
+    plt.ylabel("Predicted Attendances (Daily)")
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+
+    plt.title(f"{region} - Hybrid 7-Day Daily Forecast ({date_str})")
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.legend()
     plt.tight_layout()
     plt.savefig(f"forecast_plot_{region.replace(' ', '_')}_hybrid_7day_daily_{date_str}.png")
     plt.close()
+
 
 # Save CSV
 out_path = os.path.join(OUT_DIR, f"hybrid_7day_daily_{iso_week_str}.csv")
