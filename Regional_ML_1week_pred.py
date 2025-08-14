@@ -184,20 +184,53 @@ for region in regions:
     forecast_df.to_csv(forecast_path, index=False)
 
     # Plot
-    labels = ["RandomForest", "XGBoost"]
-    values = [rf_pred, xgb_pred]
-    colors = ["orange", "green"]
+    if mode == "validation":
+        actual_val = actual
+    else:
+        actual_val = None  # No actual available in forecast mode
 
+    # RandomForest plot
     plt.figure(figsize=(5, 5))
+    if actual_val is not None:
+        labels = ["Actual", "RandomForest"]
+        values = [actual_val, rf_pred]
+        colors = ["blue", "green"]
+    else:
+        labels = ["RandomForest"]
+        values = [rf_pred]
+        colors = ["green"]
+
     plt.bar(labels, values, color=colors)
-    plt.title(f"{region} - Week {target_week_str}")
+    plt.title(f"{region} - Week {target_week_str} (RF)")
     plt.ylabel("Total Attendances")
     ax = plt.gca()
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
     plt.tight_layout()
-    plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}.png")
-    plt.savefig(plot_path)
+    rf_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_rf.png")
+    plt.savefig(rf_plot_path)
     plt.close()
+
+    # XGBoost plot
+    plt.figure(figsize=(5, 5))
+    if actual_val is not None:
+        labels = ["Actual", "XGBoost"]
+        values = [actual_val, xgb_pred]
+        colors = ["blue", "orange"]
+    else:
+        labels = ["XGBoost"]
+        values = [xgb_pred]
+        colors = ["orange"]
+
+    plt.bar(labels, values, color=colors)
+    plt.title(f"{region} - Week {target_week_str} (XGB)")
+    plt.ylabel("Total Attendances")
+    ax = plt.gca()
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+    plt.tight_layout()
+    xgb_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_xgb.png")
+    plt.savefig(xgb_plot_path)
+    plt.close()
+
 
 # Summary Table
 summary_df = pd.DataFrame(results)
