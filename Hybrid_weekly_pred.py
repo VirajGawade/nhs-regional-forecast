@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
 from tensorflow.keras.models import load_model
 import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -190,11 +190,21 @@ for region in regions:
     print(f"  ML Prediction:     {ml_pred:.0f}" if ml_pred is not None else "  ML Prediction:     N/A")
     print(f"  LSTM Prediction:   {lstm_pred:.0f}" if lstm_pred is not None else "  LSTM Prediction:   N/A")
     print(f"  Hybrid Prediction: {hybrid_pred:.0f}")
+    mae = rmse = mape = accuracy = None
+    mae = rmse = mape = accuracy = None
     if actual_val is not None:
+        mae = mean_absolute_error([actual_val], [hybrid_pred])
+        rmse = np.sqrt(mean_squared_error([actual_val], [hybrid_pred]))
         mape = mean_absolute_percentage_error([actual_val], [hybrid_pred]) * 100
-        print(f"  Actual:            {actual_val:.0f}")
-        print(f"  MAPE:              {mape:.2f}%")
+        accuracy = 100 - mape
 
+        print(f"  Actual:            {actual_val:.0f}")
+        print(f"  MAE:               {mae:.2f}")
+        print(f"  RMSE:              {rmse:.2f}")
+        print(f"  MAPE:              {mape:.2f}%")
+        print(f"  Accuracy:          {accuracy:.2f}%")
+
+    # Always append 
     results.append({
         "Region": region,
         "Week": TARGET_DATE.date(),
@@ -202,8 +212,13 @@ for region in regions:
         "LSTM_Prediction": int(round(lstm_pred)) if lstm_pred is not None else None,
         "Hybrid_Prediction": int(round(hybrid_pred)),
         "Actual": int(round(actual_val)) if actual_val is not None else None,
-        "MAPE": round(mean_absolute_percentage_error([actual_val],[hybrid_pred])*100, 2) if actual_val is not None else None
+        "MAE": round(mae, 2) if mae is not None else None,
+        "RMSE": round(rmse, 2) if rmse is not None else None,
+        "MAPE": round(mape, 2) if mape is not None else None,
+        "Accuracy": round(accuracy, 2) if accuracy is not None else None
     })
+
+
     
     # Plot
     import matplotlib.pyplot as plt

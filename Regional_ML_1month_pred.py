@@ -105,12 +105,16 @@ for region in sorted(df[region_col].dropna().unique()):
 
             results.append({
                 "Region": region,
+                "Month": target_date.strftime("%Y-%m"),
                 "Model": model_name,
+                "Predicted": int(pred),
+                "Actual": int(actual),
                 "MAE": mae,
                 "RMSE": rmse,
                 "MAPE (%)": mape,
                 "Accuracy (%)": 100 - mape
             })
+
 
             result_df = pd.DataFrame({
                 "Month": [target_date],
@@ -131,12 +135,27 @@ for region in sorted(df[region_col].dropna().unique()):
 [INFO] Predicted: {int(pred):,}
 """)
 
+            # Append to results for summary 
+            results.append({
+                "Region": region,
+                "Month": target_date.strftime("%Y-%m"),
+                "Model": model_name,
+                "Predicted": int(pred),
+                "Actual": None,
+                "MAE": None,
+                "RMSE": None,
+                "MAPE (%)": None,
+                "Accuracy (%)": None
+            })
+
             result_df = pd.DataFrame({
                 "Month": [target_date],
                 "Region": [region],
                 "Model": [model_name],
                 "Predicted": [pred]
             })
+
+
 
         # Save prediction CSV
         out_csv = os.path.join("regional_ml_1month_predictions", f"{region.replace(' ', '_')}_{model_name}_prediction.csv")
@@ -165,6 +184,15 @@ print("\nAll regional 1-month predictions completed.")
 
 # Summary output 
 summary_df = pd.DataFrame(results)
-summary_df = summary_df[["Region", "Model", "MAE", "RMSE", "MAPE (%)", "Accuracy (%)"]]
+expected_cols = ["Region", "Month", "Model", "Predicted", "Actual", "MAE", "RMSE", "MAPE (%)", "Accuracy (%)"]
+for col in expected_cols:
+    if col not in summary_df.columns:
+        summary_df[col] = None
+summary_df = summary_df[expected_cols]
+
 print("\n[INFO] ML Monthly 1-Month Prediction Summary:")
 print(summary_df.to_string(index=False))
+print("\n[INFO] All regional 1-month predictions completed.")
+
+
+

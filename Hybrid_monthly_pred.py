@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 from tensorflow.keras.models import load_model
-from sklearn.metrics import mean_absolute_percentage_error
+from sklearn.metrics import mean_absolute_percentage_error, mean_absolute_error, mean_squared_error
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
@@ -69,14 +69,23 @@ for region in regions:
         ml_features = df.drop(columns=[region_col, "Region", "Month", "Type", target_col], errors='ignore')
         ml_features = ml_features.select_dtypes(include=[np.number])
 
-        input_features = ml_features.tail(SEQ_LEN).mean().to_frame().T
-        input_features_scaled = scaler.transform(input_features)
+        # Validation: if target_date exists, use rows before it
+        if target_date in df["Month"].values:
+            input_rows = df[df["Month"] < target_date].tail(SEQ_LEN)
+        else:
+        # Forecast: use last SEQ_LEN rows available
+            input_rows = df.tail(SEQ_LEN)
 
-        xgb_pred = xgb_model.predict(input_features_scaled)[0]
-        rf_pred = rf_model.predict(input_features_scaled)[0]
+        if len(input_rows) < SEQ_LEN:
+            ml_pred = None
+        else:
+            mean_features = input_rows[ml_features.columns].mean().to_frame().T
+            mean_features_scaled = scaler.transform(mean_features)
 
-        # Average RF and XGB predictions for ML prediction
-        ml_pred = (xgb_pred + rf_pred) / 2
+            xgb_pred = xgb_model.predict(mean_features_scaled)[0]
+            rf_pred = rf_model.predict(mean_features_scaled)[0]
+            ml_pred = (xgb_pred + rf_pred) / 2
+
 
     # LSTM prediction
     lstm_model_path = os.path.join(LSTM_MODEL_DIR, f"lstm_model_{region}.keras")
@@ -134,20 +143,35 @@ for region in regions:
     print(f"  ML Prediction:    {ml_pred:.0f}" if ml_pred is not None else "  ML Prediction: N/A")
     print(f"  LSTM Prediction:  {lstm_pred:.0f}" if lstm_pred is not None else "  LSTM Prediction: N/A")
     print(f"  Hybrid Prediction: {hybrid_pred:.0f}")
-    if actual_val is not None:
-        mape = mean_absolute_percentage_error([actual_val], [hybrid_pred]) * 100
-        print(f"  Actual:           {actual_val:.0f}")
-        print(f"  MAPE:             {mape:.2f}%")
 
+    if actual_val is not None:
+        mae = mean_absolute_error([actual_val], [hybrid_pred])
+        rmse = np.sqrt(mean_squared_error([actual_val], [hybrid_pred]))
+        mape = mean_absolute_percentage_error([actual_val], [hybrid_pred]) * 100
+        accuracy = 100 - mape
+
+        print(f"  Actual:           {actual_val:.0f}")
+        print(f"  MAE:              {mae:.2f}")
+        print(f"  RMSE:             {rmse:.2f}")
+        print(f"  MAPE:             {mape:.2f}%")
+        print(f"  Accuracy:         {accuracy:.2f}%")
+    else:
+        mae = rmse = mape = accuracy = None
+
+    # Append to results for CSV 
     results.append({
         "Region": region,
-        "Month": target_date,
+        "Month": target_date.date(),
         "ML_Prediction": int(round(ml_pred)) if ml_pred is not None else None,
         "LSTM_Prediction": int(round(lstm_pred)) if lstm_pred is not None else None,
         "Hybrid_Prediction": int(round(hybrid_pred)),
-        "Actual": int(actual_val) if actual_val is not None else None,
-        "MAPE": round(mape, 2) if actual_val is not None else None
+        "Actual": int(round(actual_val)) if actual_val is not None else None,
+        "MAE": round(mae, 2) if mae is not None else None,
+        "RMSE": round(rmse, 2) if rmse is not None else None,
+        "MAPE": round(mape, 2) if mape is not None else None,
+        "Accuracy": round(accuracy, 2) if accuracy is not None else None
     })
+
 
     # Plot 
         
@@ -197,6 +221,7 @@ for region in regions:
 
 # Save combined CSV 
 results_df = pd.DataFrame(results)
-results_csv_path = f"hybrid_monthly_predictions_{YEAR}_{MONTH:02d}.csv"
+os.makedirs("hybrid_monthly_predictions", exist_ok=True)
+results_csv_path = os.path.join("hybrid_monthly_predictions", f"hybrid_monthly_predictions_{YEAR}_{MONTH:02d}.csv")
 results_df.to_csv(results_csv_path, index=False)
 print(f"\n[INFO] Saved combined predictions to {results_csv_path}")
