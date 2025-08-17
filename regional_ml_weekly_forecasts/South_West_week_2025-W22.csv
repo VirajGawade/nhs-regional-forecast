@@ -1,3 +1,0 @@
-Region,Week,Model,Predicted
-South West,2025-06-01,RandomForest,45657.68678763499
-South West,2025-06-01,XGBoost,45986.5703125

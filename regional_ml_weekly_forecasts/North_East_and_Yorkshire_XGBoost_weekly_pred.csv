@@ -1,2 +1,0 @@
-Region,Week,Model,Predicted,Actual,MAE,MAPE
-North East and Yorkshire,2025-05-25,XGBoost,75499,99251,23751.312395681714,23.930505165064037

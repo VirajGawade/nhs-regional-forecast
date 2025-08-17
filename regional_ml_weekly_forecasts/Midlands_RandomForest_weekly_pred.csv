@@ -1,2 +1,0 @@
-Region,Week,Model,Predicted,Actual,MAE,MAPE
-Midlands,2025-05-25,RandomForest,92481,117307,24826.361560488076,21.163426726864344

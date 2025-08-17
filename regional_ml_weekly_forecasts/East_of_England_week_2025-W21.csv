@@ -1,3 +1,0 @@
-Region,Week,Model,Predicted
-East of England,2025-05-25,RandomForest,52413.413143282516
-East of England,2025-05-25,XGBoost,52033.48828125

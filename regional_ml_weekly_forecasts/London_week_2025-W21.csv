@@ -1,3 +1,0 @@
-Region,Week,Model,Predicted
-London,2025-05-25,RandomForest,92937.42083023684
-London,2025-05-25,XGBoost,92852.5546875

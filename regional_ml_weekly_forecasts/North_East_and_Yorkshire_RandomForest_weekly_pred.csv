@@ -1,2 +1,0 @@
-Region,Week,Model,Predicted,Actual,MAE,MAPE
-North East and Yorkshire,2025-05-25,RandomForest,74946,99251,24304.48507114945,24.487851274909307

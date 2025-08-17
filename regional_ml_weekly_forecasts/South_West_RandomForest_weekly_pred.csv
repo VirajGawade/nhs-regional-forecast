@@ -1,2 +1,0 @@
-Region,Week,Model,Predicted,Actual,MAE,MAPE
-South West,2025-05-25,RandomForest,43262,57792,14530.295357821138,25.142135094061835

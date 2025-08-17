@@ -1,3 +1,0 @@
-Region,Week,Model,Predicted
-Midlands,2025-05-25,RandomForest,92613.16195508314
-Midlands,2025-05-25,XGBoost,93220.3828125

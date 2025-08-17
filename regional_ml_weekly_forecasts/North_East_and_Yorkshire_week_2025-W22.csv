@@ -1,3 +1,0 @@
-Region,Week,Model,Predicted
-North East and Yorkshire,2025-06-01,RandomForest,80240.43777796478
-North East and Yorkshire,2025-06-01,XGBoost,81367.4140625
