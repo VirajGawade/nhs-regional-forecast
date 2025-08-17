@@ -1,8 +1,0 @@
-Region,Date,Actual,ML,LSTM,Hybrid,MAE,RMSE,MAPE,Accuracy
-East of England,2025-06-01,,54049,55997,54634,,,,
-London,2025-06-01,,94635,95518,94900,,,,
-Midlands,2025-06-01,,96263,98919,97060,,,,
-North East and Yorkshire,2025-06-01,,80804,82302,81253,,,,
-North West,2025-06-01,,75041,73732,74649,,,,
-South East,2025-06-01,,83641,80587,82725,,,,
-South West,2025-06-01,,45822,49019,46781,,,,
