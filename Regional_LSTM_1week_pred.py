@@ -142,16 +142,14 @@ for region in regions:
             "Accuracy": None
         })
 
-# Save results
-result_df = pd.DataFrame(results)
-result_df = result_df.sort_values("Region")
-result_df.to_csv("weekly_prediction_all_regions.csv", index=False)
+summary_df = pd.DataFrame(results)
+summary_df = summary_df.sort_values("Region")
 
 # Plot
 PLOT_DIR = "regional_lstm_weekly_plots"
 os.makedirs(PLOT_DIR, exist_ok=True)
 
-for _, row in result_df.iterrows():
+for _, row in summary_df.iterrows():
     region = row["Region"]
     actual = row["Actual"]
     predicted = row["Predicted"]
@@ -196,8 +194,6 @@ for _, row in result_df.iterrows():
 
 
 # Summary Output
-summary_df = pd.DataFrame(results)
-
 print("\n[INFO] Weekly LSTM 1-week Prediction Summary:")
 print(summary_df.to_string(index=False))
 

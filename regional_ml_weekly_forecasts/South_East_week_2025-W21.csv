@@ -1,2 +1,3 @@
-Region,Week,RF_Prediction,XGB_Prediction
-South East,2025-W21,80594,77559
+Region,Week,Model,Predicted
+South East,2025-05-25,RandomForest,81401.18042595373
+South East,2025-05-25,XGBoost,79114.5546875

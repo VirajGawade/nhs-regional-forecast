@@ -223,7 +223,7 @@ for region in regions:
     # Plot
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
-    date_str = TARGET_DATE.strftime("%Y-W%U")
+    date_str = f"{iso_year}-W{iso_week:02d}"
 
     plt.figure(figsize=(5, 5))
     if actual_val is not None:  # validation run
@@ -257,7 +257,21 @@ for region in regions:
     plt.close()
 
 # Save combined CSV 
-out_df = pd.DataFrame(results)
-out_csv = os.path.join(OUT_DIR, f"hybrid_weekly_predictions_{iso_year}_{str(iso_week).zfill(2)}.csv")
-out_df.to_csv(out_csv, index=False)
-print(f"\n[INFO] Saved combined predictions to {out_csv}")
+summary_df = pd.DataFrame(results)
+# Rename columns for consistency
+summary_df = summary_df.rename(columns={
+    "Week": "Date",
+    "ML_Prediction": "ML",
+    "LSTM_Prediction": "LSTM",
+    "Hybrid_Prediction": "Hybrid"
+})
+
+summary_df = summary_df[["Region", "Date", "Actual", "ML", "LSTM", "Hybrid", "MAE", "RMSE", "MAPE", "Accuracy"]]
+
+summary_filename = f"hybrid_weekly_predictions_{iso_year}_{str(iso_week).zfill(2)}.csv"
+summary_df.to_csv(summary_filename, index=False)
+print(f"[INFO] Saved weekly hybrid summary to {summary_filename}")
+
+print("\n[INFO] Hybrid Weekly 1-week Prediction Summary:")
+print(summary_df.to_string(index=False))
+print("\n[INFO] All regional 1-week hybrid predictions completed.")

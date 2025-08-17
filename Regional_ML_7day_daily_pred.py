@@ -129,39 +129,67 @@ for region in regions:
         })
 
         # Store average prediction for plotting
-        avg_pred = (rf_daily_ints[day] + xgb_daily_ints[day]) / 2
         all_results.append({
             "Region": region,
-            "Date": day_date,
-            "Predicted": avg_pred
+            "Date": day_date.date(),
+            "Day": day,
+            "Weekly_RF": int(round(rf_weekly_pred)),
+            "Daily_RF": rf_daily_ints[day],
+            "Weekly_XGB": int(round(xgb_weekly_pred)),
+            "Daily_XGB": xgb_daily_ints[day]
         })
 
-    forecast_df = pd.DataFrame(forecast_data)
-    forecast_path = os.path.join(FORECAST_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_daily.csv")
-    forecast_df.to_csv(forecast_path, index=False)
 
 # Create dataframe for plotting
 df_result = pd.DataFrame(all_results)
 
-# Plot ML 7day daily forecast (line chart) 
+# Plot ML 7-day daily forecast 
+# Plot 1: RandomForest 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 
 plt.figure(figsize=(12, 6))
 for region in regions:
     df_r = df_result[df_result["Region"] == region]
-    plt.plot(df_r["Date"], df_r["Predicted"], marker='o', label=region)
+    plt.plot(df_r["Date"], df_r["Daily_RF"], marker='o', label=region)
 
 plt.xlabel("Date")
 plt.ylabel("Total Attendances")
 ax = plt.gca()
 ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
-plt.title(f"Regional ML 7-Day Daily Forecast (Week of {week_start_date.date()})")
+plt.title(f"Regional ML 7-Day Daily Forecast (RandomForest, Week of {week_start_date.date()})")
 plt.xticks(rotation=45)
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("regional_ml_7day_daily_forecast_plot.png")
+plt.savefig("regional_ml_7day_daily_forecast_RF.png")
 plt.show()
 
+# Plot 2: XGBoost 
+plt.figure(figsize=(12, 6))
+for region in regions:
+    df_r = df_result[df_result["Region"] == region]
+    plt.plot(df_r["Date"], df_r["Daily_XGB"], marker='s', label=region)
+
+plt.xlabel("Date")
+plt.ylabel("Total Attendances")
+ax = plt.gca()
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
+plt.title(f"Regional ML 7-Day Daily Forecast (XGBoost, Week of {week_start_date.date()})")
+plt.xticks(rotation=45)
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("regional_ml_7day_daily_forecast_XGB.png")
+plt.show()
+
+
 print("\n[INFO] All regional 7-day daily predictions completed.")
+
+# Save combined summary 
+output_file = f"regional_ml_7day_daily_predictions_{iso_year}-W{iso_week:02d}.csv"
+ml_df = pd.DataFrame(all_results)
+ml_df.to_csv(output_file, index=False)
+print(f"[INFO] Saved ML daily predictions to {output_file}")
+
+

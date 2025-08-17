@@ -1,0 +1,50 @@
+Region,Date,Day,Weekly_LSTM,Daily_LSTM
+East of England,2025-05-19,Monday,57326,10032
+East of England,2025-05-20,Tuesday,57326,9458
+East of England,2025-05-21,Wednesday,57326,8885
+East of England,2025-05-22,Thursday,57326,8312
+East of England,2025-05-23,Friday,57326,7739
+East of England,2025-05-24,Saturday,57326,6305
+East of England,2025-05-25,Sunday,57326,6595
+London,2025-05-19,Monday,97749,17106
+London,2025-05-20,Tuesday,97749,16128
+London,2025-05-21,Wednesday,97749,15151
+London,2025-05-22,Thursday,97749,14173
+London,2025-05-23,Friday,97749,13196
+London,2025-05-24,Saturday,97749,10752
+London,2025-05-25,Sunday,97749,11243
+Midlands,2025-05-19,Monday,99795,17464
+Midlands,2025-05-20,Tuesday,99795,16466
+Midlands,2025-05-21,Wednesday,99795,15468
+Midlands,2025-05-22,Thursday,99795,14470
+Midlands,2025-05-23,Friday,99795,13472
+Midlands,2025-05-24,Saturday,99795,10977
+Midlands,2025-05-25,Sunday,99795,11478
+North East and Yorkshire,2025-05-19,Monday,83987,14697
+North East and Yorkshire,2025-05-20,Tuesday,83987,13857
+North East and Yorkshire,2025-05-21,Wednesday,83987,13017
+North East and Yorkshire,2025-05-22,Thursday,83987,12178
+North East and Yorkshire,2025-05-23,Friday,83987,11338
+North East and Yorkshire,2025-05-24,Saturday,83987,9238
+North East and Yorkshire,2025-05-25,Sunday,83987,9662
+North West,2025-05-19,Monday,76185,13332
+North West,2025-05-20,Tuesday,76185,12570
+North West,2025-05-21,Wednesday,76185,11808
+North West,2025-05-22,Thursday,76185,11046
+North West,2025-05-23,Friday,76185,10284
+North West,2025-05-24,Saturday,76185,8380
+North West,2025-05-25,Sunday,76185,8765
+South East,2025-05-19,Monday,83221,14563
+South East,2025-05-20,Tuesday,83221,13731
+South East,2025-05-21,Wednesday,83221,12899
+South East,2025-05-22,Thursday,83221,12067
+South East,2025-05-23,Friday,83221,11234
+South East,2025-05-24,Saturday,83221,9154
+South East,2025-05-25,Sunday,83221,9573
+South West,2025-05-19,Monday,49258,8620
+South West,2025-05-20,Tuesday,49258,8127
+South West,2025-05-21,Wednesday,49258,7634
+South West,2025-05-22,Thursday,49258,7142
+South West,2025-05-23,Friday,49258,6649
+South West,2025-05-24,Saturday,49258,5418
+South West,2025-05-25,Sunday,49258,5668

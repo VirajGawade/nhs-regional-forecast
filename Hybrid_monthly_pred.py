@@ -184,10 +184,11 @@ for region in regions:
     labels = []
     colors = []
 
-    if actual_val is not None:
-        labels.append("Actual")
-        bars.append(actual_val)
-        colors.append("blue")
+    # Actual (0 if forecast)
+    labels.append("Actual")
+    bars.append(actual_val if actual_val is not None else 0)
+    colors.append("blue")
+
 
     if ml_pred is not None:
         labels.append("ML")
@@ -220,8 +221,21 @@ for region in regions:
 
 
 # Save combined CSV 
-results_df = pd.DataFrame(results)
-os.makedirs("hybrid_monthly_predictions", exist_ok=True)
-results_csv_path = os.path.join("hybrid_monthly_predictions", f"hybrid_monthly_predictions_{YEAR}_{MONTH:02d}.csv")
-results_df.to_csv(results_csv_path, index=False)
-print(f"\n[INFO] Saved combined predictions to {results_csv_path}")
+summary_df = pd.DataFrame(results)
+# Rename columns for consistency
+summary_df = summary_df.rename(columns={
+    "Month": "Date",
+    "ML_Prediction": "ML",
+    "LSTM_Prediction": "LSTM",
+    "Hybrid_Prediction": "Hybrid"
+})
+
+summary_df = summary_df[["Region", "Date", "Actual", "ML", "LSTM", "Hybrid", "MAE", "RMSE", "MAPE", "Accuracy"]]
+
+summary_filename = f"hybrid_monthly_predictions_{YEAR}_{MONTH:02d}.csv"
+summary_df.to_csv(summary_filename, index=False)
+print(f"[INFO] Saved monthly hybrid summary to {summary_filename}")
+
+print("\n[INFO] Hybrid Monthly 1-month Prediction Summary:")
+print(summary_df.to_string(index=False))
+print("\n[INFO] All regional 1-month hybrid predictions completed.")

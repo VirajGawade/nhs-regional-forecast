@@ -129,19 +129,24 @@ for region in regions:
             "Region": region,
             "Date": week_dates[i].date(),
             "Day": day,
-            "Predicted": daily_value_rounded
-       })
+            "Weekly_LSTM": int(round(weekly_total)),
+            "Daily_LSTM": daily_value_rounded
+        })
 
+df_result = pd.DataFrame(results)
 
 # Save results
-df_result = pd.DataFrame(results)
-df_result.to_csv("regional_7day_daily_predictions.csv", index=False)
+output_file = f"regional_LSTM_7day_daily_predictions_{week_start.isocalendar()[0]}-W{week_start.isocalendar()[1]:02d}.csv"
+df_result.to_csv(output_file, index=False)
+print(f"[INFO] Saved LSTM daily predictions to {output_file}")
 
+
+# Plot
 # Plot
 plt.figure(figsize=(12, 6))
 for region in regions:
     df_r = df_result[df_result["Region"] == region]
-    plt.plot(df_r["Date"], df_r["Predicted"], marker='o', label=region)
+    plt.plot(df_r["Date"], df_r["Daily_LSTM"], marker='o', label=region)
 
 plt.xlabel("Date")
 plt.ylabel("Total Attendances")
@@ -154,3 +159,4 @@ plt.legend()
 plt.tight_layout()
 plt.savefig("regional_lstm_7day_daily_forecast_plot.png")
 plt.show()
+

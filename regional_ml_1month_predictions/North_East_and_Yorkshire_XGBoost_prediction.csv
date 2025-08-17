@@ -1,2 +1,0 @@
-Month,Region,Model,Actual,Predicted,MAE,RMSE,MAPE (%),Accuracy (%)
-2025-05-01,North East and Yorkshire,XGBoost,354798,348510.56,6287.4375,6287.4375,1.7721175147548747,98.22788248524513

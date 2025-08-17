@@ -14,6 +14,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Suppress TF msg
 warnings.filterwarnings("ignore", category=UserWarning)  # Ignore Keras UserWarnings
 tf.get_logger().setLevel('ERROR')  # Suppress TF logs below ERROR level
 
+
 # cli arg
 parser = argparse.ArgumentParser()
 parser.add_argument('--year', type=int, required=True)
@@ -40,6 +41,8 @@ df_all = df_all.sort_values("Month")
 # Collect all results
 all_results = []
 results = []  # summary 
+
+os.makedirs("regional_lstm_1month_plots", exist_ok=True)
 
 for REGION in REGIONS:
     df = df_all[df_all["Region_unified"] == REGION].copy()
@@ -117,7 +120,7 @@ for REGION in REGIONS:
     # Append to summary
     all_results.append(result_df)
 
-    # Also append to results list for combined summary after loop
+    # append to results list for combined summary after loop
     results.append({
         "Region": REGION,
         "Month": date_str,
@@ -149,7 +152,7 @@ for REGION in REGIONS:
             ha='center', va='bottom', fontsize=9
         )
 
-    plt.savefig(f"forecast_plot_{REGION}_{date_str}.png")
+    plt.savefig(f"regional_lstm_1month_plots/{REGION.replace(' ', '_')}_prediction_{date_str}.png")
     plt.close()
 
     print(f"[INFO] Forecast for {REGION} ({date_str}) complete.")

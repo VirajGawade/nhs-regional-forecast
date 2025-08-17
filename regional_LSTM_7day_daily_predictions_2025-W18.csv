@@ -1,0 +1,50 @@
+Region,Date,Day,Weekly_LSTM,Daily_LSTM
+East of England,2025-04-28,Monday,58144,10175
+East of England,2025-04-29,Tuesday,58144,9593
+East of England,2025-04-30,Wednesday,58144,9012
+East of England,2025-05-01,Thursday,58144,8430
+East of England,2025-05-02,Friday,58144,7849
+East of England,2025-05-03,Saturday,58144,6395
+East of England,2025-05-04,Sunday,58144,6690
+London,2025-04-28,Monday,102540,17944
+London,2025-04-29,Tuesday,102540,16919
+London,2025-04-30,Wednesday,102540,15893
+London,2025-05-01,Thursday,102540,14868
+London,2025-05-02,Friday,102540,13842
+London,2025-05-03,Saturday,102540,11279
+London,2025-05-04,Sunday,102540,11795
+Midlands,2025-04-28,Monday,102252,17894
+Midlands,2025-04-29,Tuesday,102252,16871
+Midlands,2025-04-30,Wednesday,102252,15849
+Midlands,2025-05-01,Thursday,102252,14826
+Midlands,2025-05-02,Friday,102252,13804
+Midlands,2025-05-03,Saturday,102252,11247
+Midlands,2025-05-04,Sunday,102252,11761
+North East and Yorkshire,2025-04-28,Monday,86153,15076
+North East and Yorkshire,2025-04-29,Tuesday,86153,14215
+North East and Yorkshire,2025-04-30,Wednesday,86153,13353
+North East and Yorkshire,2025-05-01,Thursday,86153,12492
+North East and Yorkshire,2025-05-02,Friday,86153,11630
+North East and Yorkshire,2025-05-03,Saturday,86153,9476
+North East and Yorkshire,2025-05-04,Sunday,86153,9911
+North West,2025-04-28,Monday,78064,13661
+North West,2025-04-29,Tuesday,78064,12880
+North West,2025-04-30,Wednesday,78064,12099
+North West,2025-05-01,Thursday,78064,11319
+North West,2025-05-02,Friday,78064,10538
+North West,2025-05-03,Saturday,78064,8587
+North West,2025-05-04,Sunday,78064,8980
+South East,2025-04-28,Monday,86382,15116
+South East,2025-04-29,Tuesday,86382,14253
+South East,2025-04-30,Wednesday,86382,13389
+South East,2025-05-01,Thursday,86382,12525
+South East,2025-05-02,Friday,86382,11661
+South East,2025-05-03,Saturday,86382,9502
+South East,2025-05-04,Sunday,86382,9936
+South West,2025-04-28,Monday,48664,8516
+South West,2025-04-29,Tuesday,48664,8029
+South West,2025-04-30,Wednesday,48664,7542
+South West,2025-05-01,Thursday,48664,7056
+South West,2025-05-02,Friday,48664,6569
+South West,2025-05-03,Saturday,48664,5353
+South West,2025-05-04,Sunday,48664,5599

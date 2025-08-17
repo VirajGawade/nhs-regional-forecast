@@ -14,7 +14,6 @@ MODEL_DIR = "regional_ml_weekly_models"
 SCALER_DIR = "regional_ml_weekly_scalers"  
 FORECAST_DIR = "regional_ml_weekly_forecasts"
 PLOT_DIR = "regional_ml_weekly_plots"
-os.makedirs(FORECAST_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR, exist_ok=True)
 
 # CLI
@@ -127,7 +126,10 @@ for region in regions:
 
         results.append({
             "Region": region,
+            "Week": target_week_str,
             "Model": "RandomForest",
+            "Predicted": int(round(rf_pred)),
+            "Actual": int(actual),
             "MAE": rf_mae,
             "RMSE": rf_rmse,
             "MAPE (%)": rf_mape,
@@ -135,12 +137,16 @@ for region in regions:
         })
         results.append({
             "Region": region,
+            "Week": target_week_str,
             "Model": "XGBoost",
+            "Predicted": int(round(xgb_pred)),
+            "Actual": int(actual),
             "MAE": xgb_mae,
             "RMSE": xgb_rmse,
             "MAPE (%)": xgb_mape,
             "Accuracy (%)": xgb_acc
         })
+
 
     else:
         print(f"""
@@ -158,7 +164,10 @@ for region in regions:
 
         results.append({
             "Region": region,
+            "Week": target_week_str,
             "Model": "RandomForest",
+            "Predicted": int(round(rf_pred)),
+            "Actual": None,
             "MAE": None,
             "RMSE": None,
             "MAPE (%)": None,
@@ -166,39 +175,28 @@ for region in regions:
         })
         results.append({
             "Region": region,
+            "Week": target_week_str,
             "Model": "XGBoost",
+            "Predicted": int(round(xgb_pred)),
+            "Actual": None,
             "MAE": None,
             "RMSE": None,
             "MAPE (%)": None,
             "Accuracy (%)": None
         })
-
-    # Save forecast CSV
-    forecast_df = pd.DataFrame({
-        "Region": [region, region],
-        "Week": [week_start_date.date(), week_start_date.date()],
-        "Model": ["RandomForest", "XGBoost"],
-        "Predicted": [rf_pred, xgb_pred]
-    })
-    forecast_path = os.path.join(FORECAST_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}.csv")
-    forecast_df.to_csv(forecast_path, index=False)
+    
 
     # Plot
+    # RandomForest plot
     if mode == "validation":
         actual_val = actual
     else:
-        actual_val = None  # No actual available in forecast mode
+        actual_val = None  # Forecast mode - no actual
 
-    # RandomForest plot
     plt.figure(figsize=(5, 5))
-    if actual_val is not None:
-        labels = ["Actual", "RandomForest"]
-        values = [actual_val, rf_pred]
-        colors = ["blue", "green"]
-    else:
-        labels = ["RandomForest"]
-        values = [rf_pred]
-        colors = ["green"]
+    labels = ["Actual", "RandomForest"]
+    values = [actual_val if actual_val is not None else 0, rf_pred]
+    colors = ["blue", "green"]
 
     plt.bar(labels, values, color=colors)
     plt.title(f"{region} - Week {target_week_str} (RF)")
@@ -207,25 +205,20 @@ for region in regions:
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
     for p in plt.gca().patches:
         plt.gca().annotate(
-            f'{p.get_height():,.0f}',          
-            (p.get_x() + p.get_width() / 2, p.get_height()),  
+            f'{p.get_height():,.0f}',
+            (p.get_x() + p.get_width() / 2, p.get_height()),
             ha='center', va='bottom', fontsize=9
         )
     plt.tight_layout()
-    rf_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_rf.png")
+    rf_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_ML_week_{target_week_str}_rf.png")
     plt.savefig(rf_plot_path)
     plt.close()
 
     # XGBoost plot
     plt.figure(figsize=(5, 5))
-    if actual_val is not None:
-        labels = ["Actual", "XGBoost"]
-        values = [actual_val, xgb_pred]
-        colors = ["blue", "orange"]
-    else:
-        labels = ["XGBoost"]
-        values = [xgb_pred]
-        colors = ["orange"]
+    labels = ["Actual", "XGBoost"]
+    values = [actual_val if actual_val is not None else 0, xgb_pred]
+    colors = ["blue", "orange"]
 
     plt.bar(labels, values, color=colors)
     plt.title(f"{region} - Week {target_week_str} (XGB)")
@@ -234,12 +227,12 @@ for region in regions:
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
     for p in plt.gca().patches:
         plt.gca().annotate(
-            f'{p.get_height():,.0f}',           
-            (p.get_x() + p.get_width() / 2, p.get_height()), 
+            f'{p.get_height():,.0f}',
+            (p.get_x() + p.get_width() / 2, p.get_height()),
             ha='center', va='bottom', fontsize=9
         )
     plt.tight_layout()
-    xgb_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_week_{target_week_str}_xgb.png")
+    xgb_plot_path = os.path.join(PLOT_DIR, f"{region.replace(' ', '_')}_ML_week_{target_week_str}_xgb.png")
     plt.savefig(xgb_plot_path)
     plt.close()
 
@@ -248,5 +241,9 @@ for region in regions:
 summary_df = pd.DataFrame(results)
 print("\n[INFO] ML Weekly 1-week Prediction Summary:")
 print(summary_df.to_string(index=False))
-
 print("\n[INFO] All regional 1-week predictions completed.")
+
+# Save one summary CSV for all regions
+summary_csv = f"regional_ml_1week_prediction_summary_{target_week_str}.csv"
+summary_df.to_csv(summary_csv, index=False)
+print(f"\n[INFO] Saved combined summary to {summary_csv}")

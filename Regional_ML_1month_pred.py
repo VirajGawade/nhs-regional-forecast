@@ -28,7 +28,8 @@ non_features = [target_col, region_col, date_col, "Region", "Type"]
 feature_cols = [col for col in df.select_dtypes(include=[np.number]).columns if col not in non_features]
 
 # Output folder
-os.makedirs("regional_ml_1month_predictions", exist_ok=True)
+os.makedirs("regional_ml_1month_plots", exist_ok=True)
+
 
 results = []  # For summary
 
@@ -116,17 +117,6 @@ for region in sorted(df[region_col].dropna().unique()):
             })
 
 
-            result_df = pd.DataFrame({
-                "Month": [target_date],
-                "Region": [region],
-                "Model": [model_name],
-                "Actual": [actual],
-                "Predicted": [pred],
-                "MAE": [mae],
-                "RMSE": [rmse],
-                "MAPE (%)": [mape],
-                "Accuracy (%)": [100 - mape]
-            })
         else:
             print(f"""
 [INFO] Region: {region}
@@ -148,18 +138,7 @@ for region in sorted(df[region_col].dropna().unique()):
                 "Accuracy (%)": None
             })
 
-            result_df = pd.DataFrame({
-                "Month": [target_date],
-                "Region": [region],
-                "Model": [model_name],
-                "Predicted": [pred]
-            })
 
-
-
-        # Save prediction CSV
-        out_csv = os.path.join("regional_ml_1month_predictions", f"{region.replace(' ', '_')}_{model_name}_prediction.csv")
-        result_df.to_csv(out_csv, index=False)
 
         # Save bar plot
         plt.figure(figsize=(5, 5))
@@ -176,7 +155,10 @@ for region in sorted(df[region_col].dropna().unique()):
             )
 
         plt.tight_layout()
-        out_png = os.path.join("regional_ml_1month_predictions", f"{region.replace(' ', '_')}_{model_name}_prediction_plot.png")
+        out_png = os.path.join(
+            "regional_ml_1month_plots",
+            f"{region.replace(' ', '_')}_{model_name}_ML_1month_prediction_{target_date.strftime('%Y-%m')}.png"
+        )
         plt.savefig(out_png)
         plt.close()
 
@@ -194,5 +176,9 @@ print("\n[INFO] ML Monthly 1-Month Prediction Summary:")
 print(summary_df.to_string(index=False))
 print("\n[INFO] All regional 1-month predictions completed.")
 
+# Save one summary CSV for all regions
+summary_csv = f"regional_ml_1month_prediction_{target_date.strftime('%Y-%m')}.csv"
+summary_df.to_csv(summary_csv, index=False)
+print(f"\n[INFO] Saved combined summary to {summary_csv}")
 
 

@@ -180,36 +180,18 @@ for region in regions:
             "Hybrid_Daily": int(val),
         })
 
-    # Per-region daily total line plot
-    import matplotlib.pyplot as plt
-    import matplotlib.ticker as ticker
-    date_str = week_end.strftime("%Y-W%U")
-
-    # Prepare daily dates and values
-    daily_dates = [(week_start + timedelta(days=i)).date() for i in range(7)]
-    daily_values = list(daily_hybrid.values())
-
-    plt.figure(figsize=(8, 5))
-    plt.plot(daily_dates, daily_values, marker='o', color='orange', label='Hybrid Prediction')
-
-    plt.xlabel("Date")
-    plt.ylabel("Predicted Attendances (Daily)")
-    ax = plt.gca()
-    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x/1000:.0f}K'))
-
-    plt.title(f"{region} - Hybrid 7-Day Daily Forecast ({date_str})")
-    plt.xticks(rotation=45)
-    plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(f"forecast_plot_{region.replace(' ', '_')}_hybrid_7day_daily_{date_str}.png")
-    plt.close()
-
 
 # Save CSV
-out_path = os.path.join(OUT_DIR, f"hybrid_7day_daily_{iso_week_str}.csv")
-pd.DataFrame(all_rows).to_csv(out_path, index=False)
-print(f"\n[INFO] Saved hybrid 7-day daily forecasts to {out_path}")
+summary_df = pd.DataFrame(all_rows)
+
+summary_df = summary_df[[
+    "Region", "Date", "Day", "Hybrid_Weekly", "Hybrid_Daily"
+]]
+
+summary_filename = f"hybrid_7day_daily_{iso_week_str}.csv"
+summary_df.to_csv(summary_filename, index=False)
+print(f"[INFO] Saved daily hybrid summary to {summary_filename}")
+
 
 # Combined regional line plot 
 import matplotlib.pyplot as plt

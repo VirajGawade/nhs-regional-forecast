@@ -1,2 +1,3 @@
-Region,Week,RF_Prediction,XGB_Prediction
-South West,2025-W21,44776,45158
+Region,Week,Model,Predicted
+South West,2025-05-25,RandomForest,44726.32854248895
+South West,2025-05-25,XGBoost,45170.51953125
